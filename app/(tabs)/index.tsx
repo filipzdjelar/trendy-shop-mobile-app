@@ -1,9 +1,25 @@
-import { View, Text } from 'react-native';
+import ProductCard from '@/components/ProductCard';
+import { useFetchProducts } from '@/hooks/useFetchProducts';
+import { IProduct } from '@/types/products';
+import React from 'react';
+import { SafeAreaView, ScrollView, Text } from 'react-native';
 
 export default function HomeScreen() {
+  const { data, loading } = useFetchProducts(5, 'desc');
+
   return (
-    <View>
-      <Text className="font-2xl t mt-24">1st tab </Text>
-    </View>
+    <SafeAreaView>
+      <ScrollView>
+        {!loading ? (
+          <>
+            {data?.map((product: IProduct) => {
+              return <ProductCard key={product.id} product={product} />;
+            })}
+          </>
+        ) : (
+          <Text> loading</Text>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
