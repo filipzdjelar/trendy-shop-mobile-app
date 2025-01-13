@@ -7,9 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import '../global.css';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Image, View, StyleSheet } from 'react-native';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -30,14 +29,61 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={DefaultTheme}>
       <SafeAreaProvider>
-        <ScrollView>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ScrollView>
-        <StatusBar />
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              header: () => <CustomHeader />,
+              statusBarStyle: 'dark',
+              statusBarBackgroundColor: 'white',
+            }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+
+        <StatusBar style="dark" backgroundColor="#e5e5e5" />
       </SafeAreaProvider>
     </ThemeProvider>
   );
 }
+
+// Custom header component
+function CustomHeader() {
+  return (
+    <View style={styles.headerContainer}>
+      <Image
+        source={require('../assets/be-trendy-logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 20,
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    // Shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Elevation for Android
+    elevation: 5,
+  },
+  logo: {
+    width: 120,
+    height: 60,
+  },
+  title: {
+    color: 'black',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});

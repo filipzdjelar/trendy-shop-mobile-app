@@ -30,7 +30,9 @@ const ProductCard: FC<IProps> = ({ product }) => {
           <ProductDetails product={product} />
         </View>
       )}
-      <Text style={styles.toggle}>{isExpanded ? '-' : '+'}</Text>
+      <TouchableOpacity onPress={toggleExpand}>
+        <Text style={styles.toggle}>{isExpanded ? 'Hide -' : 'Details +'}</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -53,14 +55,15 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   image: {
-    width: 400,
-    height: 400,
+    width: 200,
+    height: 200,
   },
   title: {
     color: '#991B1B', // Tailwind's red-800
-    fontSize: 24, // Matches Tailwind's text-3xl
+    fontSize: 20, // Matches Tailwind's text-3xl
     lineHeight: 28, // Optional: for better spacing in line-clamp-2
     textAlign: 'center',
+    padding: 4,
   },
   details: {
     marginTop: 12,
@@ -68,9 +71,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   toggle: {
-    fontSize: 24,
+    fontSize: 16,
     color: '#1F2937', // Tailwind's gray-800
-    marginTop: 8,
+    marginVertical: 8,
   },
 });
 

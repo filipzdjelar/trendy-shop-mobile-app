@@ -13,7 +13,6 @@ const ProductDetails: FC<ProductDetailsProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{product.title}</Text>
       <TouchableOpacity
         onPress={() => onCategoryPress?.(product.category)}
         style={styles.categoryContainer}
@@ -43,12 +42,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 12,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937', // Tailwind's gray-800
-    marginBottom: 8,
-  },
+
   categoryContainer: {
     marginBottom: 8,
   },
