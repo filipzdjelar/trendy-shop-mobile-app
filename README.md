@@ -1,0 +1,1 @@
+# trendy-shop-mobile-app
