@@ -1,5 +1,12 @@
-import { FC, useState } from 'react';
-import { Text, Image, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { FC, useState, Suspense } from 'react';
+import {
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 
 import { IProduct } from '@/types/products';
 import ProductDetails from './ProductDetails';
@@ -16,7 +23,7 @@ const ProductCard: FC<IProps> = ({ product }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      style={[styles.card]}
+      style={styles.card}
       onPress={toggleExpand}
     >
       <Image
@@ -27,7 +34,11 @@ const ProductCard: FC<IProps> = ({ product }) => {
       <Text style={styles.title}>{product.title}</Text>
       {isExpanded && (
         <View style={styles.details}>
-          <ProductDetails product={product} />
+          <Suspense
+            fallback={<ActivityIndicator size="small" color="#991B1B" />}
+          >
+            <ProductDetails product={product} />
+          </Suspense>
         </View>
       )}
       <TouchableOpacity onPress={toggleExpand}>
@@ -45,13 +56,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#E5E7EB', // Tailwind's gray-200
-    borderRadius: 8, // Tailwind's rounded-lg
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84, // Tailwind's shadow-md
-    elevation: 5, // Required for shadow on Android
+    shadowRadius: 3.84,
+    elevation: 5,
     margin: 12,
   },
   image: {
@@ -59,9 +70,9 @@ const styles = StyleSheet.create({
     height: 200,
   },
   title: {
-    color: '#991B1B', // Tailwind's red-800
-    fontSize: 20, // Matches Tailwind's text-3xl
-    lineHeight: 28, // Optional: for better spacing in line-clamp-2
+    color: '#991B1B',
+    fontSize: 20,
+    lineHeight: 28,
     textAlign: 'center',
     padding: 4,
   },
@@ -72,7 +83,7 @@ const styles = StyleSheet.create({
   },
   toggle: {
     fontSize: 16,
-    color: '#1F2937', // Tailwind's gray-800
+    color: '#1F2937',
     marginVertical: 8,
   },
 });
