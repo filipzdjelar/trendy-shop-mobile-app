@@ -10,3 +10,8 @@ export interface IProduct {
     count: number;
   };
 }
+
+export enum ESortOrder {
+  DESC = 'desc',
+  ASC = 'asc',
+}
