@@ -1,31 +1,22 @@
-import { fetchProductsApi } from '@/api/products';
+import { useQuery } from '@tanstack/react-query';
 import { ESortOrder, IProduct } from '@/types/products';
-import { useState, useEffect } from 'react';
+import { FETCH_PRODUCTS_KEY, fetchProductsApi } from '../api/products';
 
-export const useFetchProducts = (
+const useFetchProducts = (
   limit: number,
   sortOrder: ESortOrder,
   category?: string
 ) => {
-  const [products, setProducts] = useState<IProduct[] | null>(null);
-  const [isProductsLoading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: products = [],
+    isLoading: isProductsLoading,
+    isError: isErrorFetchingProducts,
+  } = useQuery<IProduct[]>({
+    queryKey: [FETCH_PRODUCTS_KEY, category, sortOrder, limit],
+    queryFn: async () => await fetchProductsApi(limit, sortOrder, category),
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const products = await fetchProductsApi(limit, sortOrder, category);
-        setProducts(products);
-      } catch (err) {
-        setError('Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [limit, sortOrder, category]);
-
-  return { products, isProductsLoading, error };
+  return { products, isProductsLoading, isErrorFetchingProducts };
 };
+
+export default useFetchProducts;

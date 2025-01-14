@@ -1,72 +1,42 @@
-import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
-import { FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback, useMemo, FC } from 'react';
+import {
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  Text,
+} from 'react-native';
 import ProductCard from '@/components/ProductCard';
-import ProductCardSkeleton from '@/components/ProductCardSkeleton';
-import { useFetchProducts } from '@/hooks/useFetchProducts';
-import { ESortOrder, IProduct } from '@/types/products';
+
 import AscDescButton from '@/components/AscDescButton';
+import useFetchProducts from '@/hooks/useFetchProducts';
+import { ESortOrder, IProduct } from '@/types/products';
+import ProductCardSkeleton from '@/components/ProductCardSkeleton';
 import DropdownSelect from 'react-native-input-select';
-import { useFetchCategories } from '@/hooks/useFetchCategories';
+import useFetchCategories from '@/hooks/useFetchCategories';
 
-const MemoizedProductCard = memo(ProductCard);
-
-export default function HomeScreen() {
-  const [limit, setLimit] = useState<number>(5);
+const ProductsCategory: FC = () => {
+  const [limit, setLimit] = useState(5);
   const [allProducts, setAllProducts] = useState<IProduct[]>([]);
-  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [lastFetchedCount, setLastFetchedCount] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<ESortOrder>(ESortOrder.DESC);
+  const [consecutiveIdenticalFetches, setConsecutiveIdenticalFetches] =
+    useState(0);
   const [selectedCategoryOption, setSelectedCategoryOption] =
     useState<string>('');
 
+  const { categories } = useFetchCategories();
   const { products, isProductsLoading } = useFetchProducts(
     limit,
     sortOrder,
     selectedCategoryOption
   );
-  const { categories } = useFetchCategories();
-  useEffect(() => {
-    if (products && !isProductsLoading) {
-      setAllProducts((prevProducts) => [
-        ...prevProducts,
-        ...products.slice(prevProducts.length),
-      ]);
-    }
-  }, [products, isProductsLoading]);
 
-  useEffect(() => {
-    setLimit(5);
-    setAllProducts([]);
-  }, [sortOrder, selectedCategoryOption]);
-
-  const loadMore = useCallback(() => {
-    if (!isLoadingMore && !isProductsLoading) {
-      setIsLoadingMore(true);
-      setLimit((prevLimit) => prevLimit + 5);
-      setIsLoadingMore(false);
-    }
-  }, [isLoadingMore, isProductsLoading]);
-
-  const renderFooter = useCallback(() => {
-    if (!isLoadingMore) return null;
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }, [isLoadingMore]);
-
-  const renderItem = useCallback(
-    ({ item }: { item: IProduct }) => <MemoizedProductCard product={item} />,
-    []
-  );
-
-  const renderEmptyComponent = useCallback(
-    () =>
-      isProductsLoading ? (
-        <View style={styles.skeletonContainer}>
-          {[...Array(5)].map((_, index) => (
-            <ProductCardSkeleton key={index} />
-          ))}
-        </View>
-      ) : null,
-    [isProductsLoading]
-  );
+  const memoizedProducts = useMemo(() => {
+    return Array.from(
+      new Map(allProducts.map((product) => [product.id, product])).values()
+    );
+  }, [allProducts]);
 
   const categoryOptions = useMemo(() => {
     const allCategoriesOption = { name: 'All Categories', value: '' };
@@ -79,44 +49,96 @@ export default function HomeScreen() {
     return [allCategoriesOption, ...categoryList];
   }, [categories]);
 
+  useEffect(() => {
+    // Reset on category or sort order change
+    setLimit(5);
+    setAllProducts([]);
+    setConsecutiveIdenticalFetches(0);
+    setLastFetchedCount(null);
+  }, [selectedCategoryOption, sortOrder]);
+
+  useEffect(() => {
+    if (products.length) {
+      setAllProducts((prevProducts) => [...prevProducts, ...products]);
+
+      if (lastFetchedCount !== null && lastFetchedCount === products.length) {
+        setConsecutiveIdenticalFetches((prev) => prev + 1);
+      } else {
+        setConsecutiveIdenticalFetches(0);
+      }
+
+      setLastFetchedCount(products.length);
+    }
+  }, [products, lastFetchedCount]);
+
+  const loadMore = useCallback(() => {
+    if (consecutiveIdenticalFetches >= 2 || isProductsLoading) return;
+    setLimit((prevLimit) => prevLimit + 5);
+  }, [consecutiveIdenticalFetches, isProductsLoading]);
+
+  const renderFooter = useCallback(() => {
+    if (!isProductsLoading) return null;
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }, [isProductsLoading]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: IProduct }) => <ProductCard product={item} />,
+    []
+  );
+
+  const renderSkeletonLoader = useCallback(() => {
+    return (
+      <View style={styles.skeletonContainer}>
+        {[...Array(5)].map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
+      </View>
+    );
+  }, []);
+
+  const renderEmptyComponent = useCallback(() => {
+    if (isProductsLoading) {
+      return renderSkeletonLoader();
+    }
+    return <Text>No available products for the selected category.</Text>;
+  }, [isProductsLoading, renderSkeletonLoader]);
+
   return (
     <>
       <View style={styles.header}>
         <AscDescButton sortOrder={sortOrder} setSortOrder={setSortOrder} />
-        <View style={styles.select}>
-          {categories && (
-            <DropdownSelect
-              options={categoryOptions}
-              optionLabel={'name'}
-              optionValue={'value'}
-              placeholder=""
-              selectedValue={selectedCategoryOption}
-              onValueChange={(itemValue: any) => {
-                setSelectedCategoryOption(itemValue);
-              }}
-              checkboxControls={{
-                checkboxStyle: {
-                  backgroundColor: 'green',
-                  borderRadius: 30,
-                  borderColor: 'green',
-                },
+        {categories && (
+          <DropdownSelect
+            options={categoryOptions}
+            optionLabel={'name'}
+            optionValue={'value'}
+            placeholder=""
+            selectedValue={selectedCategoryOption}
+            onValueChange={(itemValue: any) => {
+              setSelectedCategoryOption(itemValue);
+            }}
+            checkboxControls={{
+              checkboxStyle: {
+                backgroundColor: 'green',
+                borderRadius: 30,
+                borderColor: 'green',
+              },
 
-                checkboxUnselectedColor: 'gray',
-                checkboxComponent: <View style={styles.radioButton} />,
-              }}
-              dropdownStyle={{
-                paddingVertical: 5,
-                paddingHorizontal: 5,
-                minHeight: 50,
-                width: 250,
-              }}
-            />
-          )}
-        </View>
+              checkboxUnselectedColor: 'gray',
+              checkboxComponent: <View style={styles.radioButton} />,
+            }}
+            dropdownStyle={{
+              paddingVertical: 5,
+              paddingHorizontal: 5,
+              minHeight: 50,
+              width: 250,
+            }}
+          />
+        )}
       </View>
 
       <FlatList
-        data={allProducts}
+        data={memoizedProducts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ListFooterComponent={renderFooter}
@@ -126,7 +148,9 @@ export default function HomeScreen() {
       />
     </>
   );
-}
+};
+
+export default ProductsCategory;
 
 const styles = StyleSheet.create({
   skeletonContainer: {

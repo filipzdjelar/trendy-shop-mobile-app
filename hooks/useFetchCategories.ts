@@ -1,26 +1,17 @@
-import { fetchCategoriesApi } from '@/api/products';
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { FETCH_CATEGORIES_KEY, fetchCategoriesApi } from '@/api/products';
 
-export const useFetchCategories = () => {
-  const [categories, setCategories] = useState<string[] | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const useFetchCategories = () => {
+  const {
+    data: categories,
+    isLoading: isCategoriesLoading,
+    error: isErrorFetchingCategories,
+  } = useQuery<string[]>({
+    queryKey: [FETCH_CATEGORIES_KEY],
+    queryFn: async () => await fetchCategoriesApi(),
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const categories = await fetchCategoriesApi();
-        setCategories(categories);
-      } catch (err) {
-        setError('Failed to fetch categories');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  return { categories, isLoading, error };
+  return { categories, isCategoriesLoading, isErrorFetchingCategories };
 };
+
+export default useFetchCategories;
