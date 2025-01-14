@@ -46,7 +46,6 @@ export default function RootLayout() {
   );
 }
 
-// Custom header component
 function CustomHeader() {
   return (
     <View style={styles.headerContainer}>
@@ -68,12 +67,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,
     backgroundColor: 'white',
-    // Shadow for iOS
+
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    // Elevation for Android
+    shadowRadius: 4,
     elevation: 5,
   },
   logo: {
