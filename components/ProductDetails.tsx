@@ -1,24 +1,16 @@
-import { IProduct } from '@/types/products';
 import { type FC } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { IProduct } from '@/types/products';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface ProductDetailsProps {
   product: IProduct;
-  onCategoryPress?: (category: string) => void;
 }
 
-const ProductDetails: FC<ProductDetailsProps> = ({
-  product,
-  onCategoryPress,
-}) => {
+const ProductDetails: FC<ProductDetailsProps> = ({ product }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => onCategoryPress?.(product.category)}
-        style={styles.categoryContainer}
-      >
-        <Text style={styles.category}>{product.category.toUpperCase()}</Text>
-      </TouchableOpacity>
+      <Text style={styles.category}>{product.category.toUpperCase()}</Text>
+
       <Text style={styles.description}>{product.description}</Text>
       <View style={styles.priceRatingContainer}>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
@@ -33,12 +25,14 @@ const ProductDetails: FC<ProductDetailsProps> = ({
   );
 };
 
+export default ProductDetails;
+
 const styles = StyleSheet.create({
   container: {
     padding: 12,
-    backgroundColor: '#F9FAFB', // Tailwind's gray-50
+    backgroundColor: '#F9FAFB',
     borderRadius: 8,
-    borderColor: '#E5E7EB', // Tailwind's gray-200
+    borderColor: '#E5E7EB',
     borderWidth: 1,
     marginTop: 12,
   },
@@ -48,12 +42,12 @@ const styles = StyleSheet.create({
   },
   category: {
     fontSize: 14,
-    color: '#2563EB', // Tailwind's blue-600
+    color: '#2563EB',
     fontWeight: '600',
   },
   description: {
     fontSize: 14,
-    color: '#374151', // Tailwind's gray-700
+    color: '#374151',
     marginBottom: 12,
   },
   priceRatingContainer: {
@@ -64,7 +58,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#10B981', // Tailwind's green-500
+    color: '#10B981',
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -72,13 +66,11 @@ const styles = StyleSheet.create({
   },
   ratingStar: {
     fontSize: 16,
-    color: '#FBBF24', // Tailwind's yellow-400
+    color: '#FBBF24',
     marginRight: 4,
   },
   ratingText: {
     fontSize: 14,
-    color: '#4B5563', // Tailwind's gray-600
+    color: '#4B5563',
   },
 });
-
-export default ProductDetails;

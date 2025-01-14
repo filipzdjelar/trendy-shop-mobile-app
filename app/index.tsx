@@ -7,7 +7,6 @@ import {
   Text,
 } from 'react-native';
 import ProductCard from '@/components/ProductCard';
-
 import AscDescButton from '@/components/AscDescButton';
 import useFetchProducts from '@/hooks/useFetchProducts';
 import { ESortOrder, IProduct } from '@/types/products';
@@ -42,7 +41,7 @@ const ProductsCategory: FC = () => {
     const allCategoriesOption = { name: 'All Categories', value: '' };
     const categoryList =
       categories?.map((category) => ({
-        name: category,
+        name: category.charAt(0).toUpperCase() + category.slice(1),
         value: category,
       })) || [];
 
@@ -119,12 +118,12 @@ const ProductsCategory: FC = () => {
             }}
             checkboxControls={{
               checkboxStyle: {
-                backgroundColor: 'green',
+                backgroundColor: '#85a49c',
                 borderRadius: 30,
-                borderColor: 'green',
+                borderColor: 'lightgray',
               },
 
-              checkboxUnselectedColor: 'gray',
+              checkboxUnselectedColor: 'lightgray',
               checkboxComponent: <View style={styles.radioButton} />,
             }}
             dropdownStyle={{
@@ -158,9 +157,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-
+    gap: 16,
     margin: 16,
   },
   select: {

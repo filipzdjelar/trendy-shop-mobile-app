@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginTop: 20,
+    marginTop: 30,
     paddingVertical: 10,
     backgroundColor: 'white',
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 120,
-    height: 60,
+    height: 70,
   },
   title: {
     color: 'black',

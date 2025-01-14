@@ -42,7 +42,7 @@ const ProductCard: FC<IProps> = ({ product }) => {
         </View>
       )}
       <TouchableOpacity onPress={toggleExpand}>
-        <Text style={styles.toggle}>{isExpanded ? 'Hide -' : 'Details +'}</Text>
+        <Text style={styles.toggle}>{isExpanded ? '-' : '+'}</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -64,17 +64,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     margin: 12,
+    padding: 12,
   },
   image: {
     width: 200,
     height: 200,
   },
   title: {
-    color: '#991B1B',
-    fontSize: 20,
-    lineHeight: 28,
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 600,
+    lineHeight: 20,
     textAlign: 'center',
-    padding: 4,
+    padding: 12,
   },
   details: {
     marginTop: 12,
@@ -82,9 +84,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   toggle: {
-    fontSize: 16,
+    fontSize: 32,
     color: '#1F2937',
-    marginVertical: 8,
+    marginVertical: 6,
   },
 });
 

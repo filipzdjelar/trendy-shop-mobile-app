@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    borderColor: '#e5e7eb', // Equivalent to gray-200
+    borderColor: '#e5e7eb',
     borderWidth: 1,
     borderRadius: 8,
     padding: 16,
-    shadowColor: '#000', // Equivalent to shadow-md
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
@@ -29,23 +29,23 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   imagePlaceholder: {
-    width: 200, // Width for w-24
-    height: 200, // Height for h-32
-    backgroundColor: '#d1d5db', // Equivalent to gray-300
+    width: 200,
+    height: 200,
+    backgroundColor: '#d1d5db',
     borderRadius: 8,
     marginBottom: 16,
   },
   titlePlaceholder: {
-    width: '80%', // Equivalent to w-4/5
-    height: 16, // Equivalent to h-4
-    backgroundColor: '#d1d5db', // Equivalent to gray-300
+    width: '80%',
+    height: 16,
+    backgroundColor: '#d1d5db',
     borderRadius: 8,
     marginBottom: 8,
   },
   subtitlePlaceholder: {
-    width: '20%', // Equivalent to w-1/5
-    height: 16, // Equivalent to h-4
-    backgroundColor: '#d1d5db', // Equivalent to gray-300
+    width: '20%',
+    height: 16,
+    backgroundColor: '#d1d5db',
     borderRadius: 8,
   },
 });

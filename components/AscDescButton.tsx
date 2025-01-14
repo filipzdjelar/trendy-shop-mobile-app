@@ -39,15 +39,14 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     backgroundColor: '#0f766e',
-    // marginVertical: 8,
     width: 80,
     height: 50,
   },
   asc: {
-    backgroundColor: '#0f766e',
+    backgroundColor: '#85a49c',
   },
   desc: {
-    backgroundColor: '#134e4a',
+    backgroundColor: '#85a49c',
   },
   text: {
     color: '#ffffff',
